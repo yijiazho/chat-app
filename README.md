@@ -3,14 +3,19 @@
 This is a light weight python chat app, using fastapi
 
 ## Project Structure
-lightweight-python-project/
-├── venv/
-├── README.md
-├── .gitignore
+chat-app
 ├── app.py
-├── frontend/
-│   ├── index.html
-│   └── script.js
+├── frontend
+|  ├── build
+|  ├── index.html
+|  ├── package-lock.json
+|  ├── package.json
+|  ├── public
+|  ├── README.md
+|  ├── script.js
+|  └── src
+├── main.py
+├── README.md
 ├── requirements.txt
 
 
