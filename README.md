@@ -3,6 +3,7 @@
 This is a light weight python chat app, using fastapi
 
 ## Project Structure
+```
 chat-app
 ├── app.py
 ├── frontend
@@ -17,7 +18,7 @@ chat-app
 ├── main.py
 ├── README.md
 ├── requirements.txt
-
+```
 
 
 ## Virtual environment
@@ -33,7 +34,18 @@ pip install -r requirements.txt
 pip freeze > requirements.txt
 
 ## Run App
+### Frontend
+In the frontend folder, run 
+```
+npm run build
+```
+
+### Backend
+In the chat-app folder, run
+```
 uvicorn app:app --reload
+```
+Then go to http://localhost:8000/
 
 ## Usage
 ### Join the chat

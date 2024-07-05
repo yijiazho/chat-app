@@ -1,5 +1,6 @@
 // src/Chat.js
 import React, { useState, useEffect } from 'react';
+import './Chat.css'
 
 const Chat = () => {
     const [username, setUsername] = useState('');
@@ -10,7 +11,7 @@ const Chat = () => {
 
     useEffect(() => {
         if (connected) {
-            const websocket = new WebSocket('ws://localhost:8000/ws');
+            const websocket = new WebSocket(`ws://localhost:8000/ws/${username}`);
             setWs(websocket);
 
             websocket.onmessage = (event) => {
@@ -26,14 +27,15 @@ const Chat = () => {
                 websocket.close();
             };
         }
-    }, [connected]);
+    }, [connected, username]);
 
     const handleSendMessage = (e) => {
         console.log("handle send message")
         e.preventDefault();
         if (ws && message) {
-            console.log(JSON.stringify(ws))
-            ws.send(`${username}: ${message}`);
+            console.log(username)
+            console.log(message)
+            ws.send(message);
             setMessage('');
         }
     };
@@ -55,9 +57,9 @@ const Chat = () => {
     };
 
     return (
-        <div>
+        <div className="chat-container">
             {!connected ? (
-                <div>
+                <div className="join-container">
                     <input
                         type="text"
                         placeholder="Enter your username"
@@ -67,22 +69,26 @@ const Chat = () => {
                     <button onClick={handleJoinChat}>Join Chat</button>
                 </div>
             ) : (
-                <div>
-                    <button onClick={handleLeaveChat}>Leave Chat</button>
-                    <form onSubmit={handleSendMessage}>
-                        <input
-                            type="text"
-                            placeholder="Enter your message"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                        />
-                        <button type="submit">Send</button>
-                    </form>
-                    <ul>
-                        {messages.map((msg, index) => (
-                            <li key={index}>{msg}</li>
-                        ))}
-                    </ul>
+                <div className="chat-room">
+                    <div className="messages">
+                        <ul>
+                            {messages.map((msg, index) => (
+                                <li key={index}>{msg}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="input-container">
+                        <button onClick={handleLeaveChat}>Leave Chat</button>
+                        <form onSubmit={handleSendMessage}>
+                            <input
+                                type="text"
+                                placeholder="Enter your message"
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                            />
+                            <button type="submit">Send</button>
+                        </form>
+                    </div>
                 </div>
             )}
         </div>

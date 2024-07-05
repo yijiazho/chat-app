@@ -7,19 +7,23 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory=os.path.join("frontend", "build", "static")), name="static")
 
+## Responsible for multiple websockets
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: list[WebSocket] = []
+        self.active_connections: dict[WebSocket, str] = {}
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket, username: str):
         await websocket.accept()
-        self.active_connections.append(websocket)
+        self.active_connections[websocket] = username
+        await self.broadcast(f"{username} has joined the chat")
 
     def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+        username = self.active_connections.pop(websocket, None)
+        if username:
+            return username
 
     async def broadcast(self, message: str):
-        for connection in self.active_connections:
+        for connection in self.active_connections.keys():
             await connection.send_text(message)
 
 manager = ConnectionManager()
@@ -28,12 +32,14 @@ manager = ConnectionManager()
 async def get():
     return HTMLResponse(open(os.path.join("frontend", "build", "index.html")).read())
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
+@app.websocket("/ws/{username}")
+async def websocket_endpoint(websocket: WebSocket, username: str):
+    await manager.connect(websocket, username)
     try:
         while True:
             data = await websocket.receive_text()
-            await manager.broadcast(f"{data}")
+            await manager.broadcast(f"{username}: {data}")
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        username = manager.disconnect(websocket)
+        if username:
+            await manager.broadcast(f"{username} has left the chat")
