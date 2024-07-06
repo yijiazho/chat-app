@@ -21,8 +21,17 @@ class ConnectionManager:
         username = self.active_connections.pop(websocket, None)
         if username:
             return username
+        
+    async def change_username(self, websocket: WebSocket, new_username: str):
+        print("change user_name")
+        print(self.active_connections)
+        old_username = self.active_connections[websocket]
+        self.active_connections[websocket] = new_username
+        await self.broadcast(f"{old_username} has changed their username to {new_username}")
+        print("user name changed successfully")
 
     async def broadcast(self, message: str):
+        print("broadcasting...")
         for connection in self.active_connections.keys():
             await connection.send_text(message)
 
@@ -34,12 +43,23 @@ async def get():
 
 @app.websocket("/ws/{username}")
 async def websocket_endpoint(websocket: WebSocket, username: str):
+    print("python ws")
     await manager.connect(websocket, username)
     try:
         while True:
             data = await websocket.receive_text()
-            await manager.broadcast(f"{username}: {data}")
+            print("new message...")
+            print(data)
+            if data.startswith("/change_username "):
+                new_username = data.split("/change_username ", 1)[1]
+                print(new_username)
+                await manager.change_username(websocket, new_username)
+                print("change successful ......")
+            else:
+                current_username = manager.active_connections[websocket]
+                await manager.broadcast(f"{current_username}: {data}")
     except WebSocketDisconnect:
+        print("web socket disconnected")
         username = manager.disconnect(websocket)
         if username:
             await manager.broadcast(f"{username} has left the chat")

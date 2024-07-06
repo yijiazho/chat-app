@@ -6,6 +6,7 @@ const Chat = () => {
     const [username, setUsername] = useState('');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [newUsername, setNewUsername] = useState('');
     const [connected, setConnected] = useState(false);
     const [ws, setWs] = useState(null);
 
@@ -27,14 +28,11 @@ const Chat = () => {
                 websocket.close();
             };
         }
-    }, [connected, username]);
+    }, [connected]);
 
     const handleSendMessage = (e) => {
-        console.log("handle send message")
         e.preventDefault();
         if (ws && message) {
-            console.log(username)
-            console.log(message)
             ws.send(message);
             setMessage('');
         }
@@ -53,6 +51,17 @@ const Chat = () => {
         setMessages([]);
         if (ws) {
             ws.close();
+        }
+    };
+
+    const handleUsernameChange = (e) => {
+        console.log("change user name")
+        e.preventDefault();
+        if (ws && newUsername.trim() !== '') {
+            console.log("new user name", newUsername)
+            ws.send(`/change_username ${newUsername}`);
+            setUsername(newUsername);
+            setNewUsername('');
         }
     };
 
@@ -87,6 +96,15 @@ const Chat = () => {
                                 onChange={(e) => setMessage(e.target.value)}
                             />
                             <button type="submit">Send</button>
+                        </form>
+                        <form onSubmit={handleUsernameChange}>
+                            <input
+                                type="text"
+                                placeholder="Change your username"
+                                value={newUsername}
+                                onChange={(e) => setNewUsername(e.target.value)}
+                            />
+                            <button type="submit">Change Username</button>
                         </form>
                     </div>
                 </div>
