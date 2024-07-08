@@ -5,7 +5,9 @@ This is a light weight python chat app, using fastapi
 ## Project Structure
 ```
 chat-app
-├── app.py
+├── backend
+|  ├── app.py
+|  ├── test_app.py
 ├── frontend
 |  ├── build
 |  ├── index.html
@@ -15,7 +17,7 @@ chat-app
 |  ├── README.md
 |  ├── script.js
 |  └── src
-├── main.py
+├── run_app.bat
 ├── README.md
 ├── requirements.txt
 ```
@@ -61,3 +63,10 @@ Enter new username and click "Change username"
 
 ### Leave chat
 Click "Leave chat" button
+
+## Testing
+### Backend
+In the backend folder, run ```pytest test_app.py```
+
+### Frontend
+In the frontend folder, run ```npm test```

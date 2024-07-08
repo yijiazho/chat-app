@@ -5,7 +5,7 @@ import os
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory=os.path.join("frontend", "build", "static")), name="static")
+app.mount("/static", StaticFiles(directory=os.path.join("..", "frontend", "build", "static")), name="static")
 
 ## Responsible for multiple websockets
 class ConnectionManager:
@@ -27,7 +27,7 @@ class ConnectionManager:
         print(self.active_connections)
         old_username = self.active_connections[websocket]
         self.active_connections[websocket] = new_username
-        await self.broadcast(f"{old_username} has changed their username to {new_username}")
+        await self.broadcast(f"{old_username} has changed username to {new_username}")
         print("user name changed successfully")
 
     async def broadcast(self, message: str):
@@ -39,7 +39,7 @@ manager = ConnectionManager()
 
 @app.get("/")
 async def get():
-    return HTMLResponse(open(os.path.join("frontend", "build", "index.html")).read())
+    return HTMLResponse(open(os.path.join("..", "frontend", "build", "index.html")).read())
 
 @app.websocket("/ws/{username}")
 async def websocket_endpoint(websocket: WebSocket, username: str):
