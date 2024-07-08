@@ -63,3 +63,13 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
         username = manager.disconnect(websocket)
         if username:
             await manager.broadcast(f"{username} has left the chat")
+
+## TODO
+## Testing
+## code styling
+## Data storage
+## UI styling
+## subscription
+## I18n and a11y
+## High volume QPS
+## Deployment

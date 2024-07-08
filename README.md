@@ -23,15 +23,15 @@ chat-app
 
 ## Virtual environment
 ### Windows
-.\venv\Scripts\activate
+```.\venv\Scripts\activate```
 ### Mac OS/Linux
-source venv/bin/activate
+```source venv/bin/activate```
 
 ## Install dependencies
-pip install -r requirements.txt
+```pip install -r requirements.txt```
 
 ## Update dependencies
-pip freeze > requirements.txt
+```pip freeze > requirements.txt```
 
 ## Run App
 ### Frontend
@@ -47,9 +47,17 @@ uvicorn app:app --reload
 ```
 Then go to http://localhost:8000/
 
+Alternatively, if you are in windows, you can run ```.\run_app.bat```
+
 ## Usage
 ### Join the chat
 Enter username and click "Join Chat"
 
 ### Send message
 Type message and click "Send"
+
+### Change username
+Enter new username and click "Change username"
+
+### Leave chat
+Click "Leave chat" button
